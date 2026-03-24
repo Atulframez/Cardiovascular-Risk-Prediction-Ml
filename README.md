@@ -94,7 +94,7 @@ bash
 git clone https://github.com/your-username/cardiovascular-risk-prediction-ml.git
 cd cardiovascular-risk-prediction-ml
 
-###  2️⃣ Install Dependencies
+##  2️⃣ Install Dependencies
 pip install numpy pandas matplotlib seaborn scikit-learn
 3️⃣ Run Notebook
 Open .ipynb file in:
