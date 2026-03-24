@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Viva Q&A — Heart Attack Prediction</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',Arial,sans-serif; background:#0D1117; color:#E2E8F0; padding:30px; }
+  h1 { text-align:center; font-size:2rem; color:#E63946; margin-bottom:6px; }
+  .subtitle { text-align:center; color:#94A3B8; margin-bottom:30px; font-style:italic; }
+  .section { margin-bottom:28px; }
+  .section-title { font-size:1.15rem; font-weight:bold; color:#2EC4B6; border-left:4px solid #2EC4B6;
+    padding-left:12px; margin-bottom:14px; letter-spacing:1px; text-transform:uppercase; }
+  .qa { background:#0F1F2E; border:1px solid #1E3A5F; border-radius:10px;
+    margin-bottom:12px; overflow:hidden; }
+  .question { background:#1E3A5F; padding:12px 18px; font-weight:bold; color:#F4A261;
+    font-size:0.98rem; display:flex; align-items:flex-start; gap:10px; }
+  .q-num { background:#E63946; color:#fff; border-radius:50%; width:26px; height:26px;
+    display:flex; align-items:center; justify-content:center; font-size:0.8rem;
+    flex-shrink:0; margin-top:1px; }
+  .answer { padding:12px 18px 14px 54px; color:#CBD5E1; line-height:1.65; font-size:0.95rem; }
+  .tip { background:#0A2A1A; border:1px solid #2EC4B6; border-radius:8px;
+    padding:10px 14px; margin-top:8px; color:#86EFAC; font-size:0.9rem; }
+  .tip::before { content:'💡 Teacher Tip: '; font-weight:bold; color:#2EC4B6; }
+  footer { text-align:center; margin-top:40px; color:#475569; font-size:0.85rem; }
+  @media print { body { background:#fff; color:#000; } .qa { border:1px solid #ccc; }
+    .question { background:#1E3A5F; } h1 { color:#E63946; } }
+</style>
+</head>
+<body>
+<h1>🫀 Viva Q&A Sheet</h1>
+<p class="subtitle">Heart Attack Prediction — Multi-Output Regression | Viswesh Anand | Class XII</p>
+
+<div class="section">
+<div class="section-title">📌 Basic Concept Questions</div>
+
+<div class="qa"><div class="question"><div class="q-num">1</div>What is the main objective of your project?</div>
+<div class="answer">The objective is to predict 7 cardiovascular parameters — including stenosis percentage, artery diameter, cholesterol, blood pressure, heart rate, BMI, and a composite risk score — using 5 lifestyle inputs: age, smoking, exercise, diet, and family history. Instead of simply classifying risk as high or low, regression gives continuous medical values that are more useful for analysis.
+<div class="tip">Emphasize "7 outputs" and "regression" — these show project depth.</div></div></div>
+
+<div class="qa"><div class="question"><div class="q-num">2</div>What is a heart attack? How does it relate to your project?</div>
+<div class="answer">A heart attack (myocardial infarction) occurs when blood flow through a coronary artery is blocked, starving heart muscle of oxygen. The blockage is caused by stenosis — narrowing of the artery due to plaque buildup. My project directly models stenosis percentage and artery diameter, which are the primary physical indicators of heart attack risk.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">3</div>Why did you choose Regression instead of Classification?</div>
+<div class="answer">Classification gives only a binary yes/no answer. Regression gives continuous numerical values — like "stenosis is at 78%" or "risk score is 65/100" — which are far more informative for medical decision-making. A doctor needs numbers, not just a label. This makes the project medically realistic and analytically richer.
+<div class="tip">This is likely the most important question. Nail this one.</div></div></div>
+
+<div class="qa"><div class="question"><div class="q-num">4</div>What is stenosis?</div>
+<div class="answer">Stenosis is the narrowing of a blood vessel due to the buildup of fatty deposits called plaque inside the artery walls — a process called atherosclerosis. As stenosis increases, the artery diameter decreases. A stenosis above 70–80% is considered severe and significantly increases heart attack risk.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">5</div>What are the 5 inputs and 7 outputs?</div>
+<div class="answer"><strong>Inputs:</strong> Age, Smoking (0/1), Exercise Level (0–4), Diet Score (1–10), Family History (0/1).<br><br><strong>Outputs:</strong> Stenosis (%), Artery Diameter (mm), Cholesterol (mg/dL), Blood Pressure (mmHg), Heart Rate (bpm), BMI, and Risk Score (0–100).</div></div>
+</div>
+
+<div class="section">
+<div class="section-title">🤖 Algorithm Questions</div>
+
+<div class="qa"><div class="question"><div class="q-num">6</div>What is Random Forest? Why did you choose it?</div>
+<div class="answer">Random Forest is an ensemble learning algorithm that builds multiple decision trees on random subsets of training data and averages their predictions. I chose it because: (1) It reduces overfitting — a single decision tree memorizes data, while RF generalizes better. (2) It handles non-linear medical relationships. (3) It provides feature importance scores. (4) It works well on small-to-medium datasets.
+<div class="tip">The sentence to memorize: "Random Forest reduces overfitting through ensemble averaging."</div></div></div>
+
+<div class="qa"><div class="question"><div class="q-num">7</div>What is MultiOutputRegressor?</div>
+<div class="answer">MultiOutputRegressor is a scikit-learn wrapper that trains one regression model per output variable. In my project, it trains 7 Random Forest models internally — one for each of the 7 cardiovascular parameters — and outputs all 7 predictions from a single predict() call.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">8</div>What is overfitting? How does Random Forest solve it?</div>
+<div class="answer">Overfitting occurs when a model learns the training data too precisely and fails to generalize to new data. A single decision tree memorizes every detail including noise. Random Forest solves this by training many trees on random data subsets (bootstrapping) and random feature subsets, then averaging — which cancels out individual tree errors.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">9</div>What is the difference between regression and classification?</div>
+<div class="answer">Classification predicts a discrete label (e.g., 0 or 1, cat or dog). Regression predicts a continuous numerical value (e.g., 78.5% stenosis, risk score of 65.2). My project uses regression because medical parameters are continuous quantities — a blood pressure of 145 mmHg carries different meaning than just "high."</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">10</div>What is train-test split? What ratio did you use?</div>
+<div class="answer">Train-test split divides the dataset into a training set (used to teach the model) and a testing set (used to evaluate it on unseen data). I used an 80/20 split: 240 rows for training and 60 rows for testing. This ensures the model is evaluated on data it has never seen before.</div></div>
+</div>
+
+<div class="section">
+<div class="section-title">📊 Dataset & Evaluation Questions</div>
+
+<div class="qa"><div class="question"><div class="q-num">11</div>Why did you use a synthetic dataset?</div>
+<div class="answer">Real coronary artery data requires angiography or CT scans and is not publicly available in the required format. No open-source dataset combines artery measurements with lifestyle data together. I generated a synthetic dataset using medically accepted physiological ranges and built-in logical correlations — for example, higher smoking leads to higher stenosis, which in turn reduces artery diameter.
+<div class="tip">Do NOT say "I just randomly generated data." Say "medically calibrated synthetic data."</div></div></div>
+
+<div class="qa"><div class="question"><div class="q-num">12</div>What is R² Score? What values did you get?</div>
+<div class="answer">R² (R-squared) measures how well the model explains variance in the target variable. A score of 1.0 means perfect prediction; 0.0 means the model is no better than predicting the mean. My average R² across 7 outputs is approximately 0.70. The Risk Score output achieved the best R² of 0.80.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">13</div>What is Mean Absolute Error (MAE)?</div>
+<div class="answer">MAE is the average of the absolute differences between predicted and actual values. A lower MAE means more accurate predictions. For example, my Stenosis prediction has an MAE of ~8.2, meaning predictions are on average 8.2 percentage points away from actual values.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">14</div>Which feature is most important in your model?</div>
+<div class="answer">Based on the feature importance analysis of the Random Forest model predicting stenosis, age and smoking are the top two features. This is medically logical — older age leads to more plaque buildup, and smoking accelerates atherosclerosis. Family history is third, followed by exercise level and diet score.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">15</div>Is your model 100% accurate? What are its limitations?</div>
+<div class="answer">No model is 100% accurate. The main limitations are: (1) The dataset is synthetic, not from real patients. (2) Real cardiovascular risk depends on many more variables like blood glucose, smoking history duration, and medication use. (3) The model is a demonstration tool — not a clinical diagnostic device. In a real deployment, it would need validation against clinical data and regulatory approval.</div></div>
+</div>
+
+<div class="section">
+<div class="section-title">🌐 Website & Tools</div>
+
+<div class="qa"><div class="question"><div class="q-num">16</div>What tools and libraries did you use?</div>
+<div class="answer">Python was the primary language. Libraries used: NumPy and Pandas for data generation and manipulation; Scikit-learn for the MultiOutputRegressor and RandomForestRegressor; Matplotlib and Seaborn for visualization. The project runs in Google Colab — a free, cloud-based Jupyter Notebook environment by Google.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">17</div>What is Google Colab? Why did you use it?</div>
+<div class="answer">Google Colab is a free cloud-based Python notebook environment that runs in the browser without any local setup. I chose it because it requires no installation, provides free GPU/CPU compute, allows code and explanations together in cells, and can be shared easily like a Google Doc.</div></div>
+
+<div class="qa"><div class="question"><div class="q-num">18</div>Could this project be deployed as a real application?</div>
+<div class="answer">Yes — as a future scope item. The trained model could be exported using joblib or pickle, and a web interface could be built using Flask or Streamlit where a doctor enters patient data and gets risk scores. However, before real clinical use, the model would need validation on actual patient data and regulatory clearance.</div></div>
+</div>
+
+<footer>Heart Attack Prediction Project &nbsp;|&nbsp; Viswesh Anand &nbsp;|&nbsp; Class XII Computer Science &nbsp;|&nbsp; 2025–26</footer>
+</body>
+</html>
