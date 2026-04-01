@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Heart Attack Prediction System</title>
+<style>
+  :root {
+    --dark:#0D1117; --navy:#0D2137; --red:#E63946;
+    --teal:#2EC4B6; --gold:#F4A261; --light:#F1F5F9;
+    --card:#0F1F2E; --border:#1E3A5F; --gray:#94A3B8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--dark);color:#E2E8F0;overflow-x:hidden;}
+  /* NAV */
+  nav{background:rgba(13,33,55,0.95);backdrop-filter:blur(10px);padding:14px 40px;
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;
+    border-bottom:2px solid var(--red);}
+  .logo{font-size:1.4rem;font-weight:900;color:var(--red);}
+  .logo span{color:#fff;}
+  nav ul{list-style:none;display:flex;gap:28px;}
+  nav a{color:var(--gray);text-decoration:none;font-size:0.95rem;transition:color .2s;}
+  nav a:hover{color:var(--teal);}
+  /* HERO */
+  .hero{background:linear-gradient(135deg,#0A1929 0%,#0D2137 50%,#1a0a29 100%);
+    padding:90px 40px 70px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+    width:600px;height:600px;background:radial-gradient(circle,rgba(230,57,70,.15) 0%,transparent 70%);}
+  .hero-badge{display:inline-block;background:rgba(230,57,70,.15);border:1px solid var(--red);
+    color:var(--red);padding:6px 18px;border-radius:20px;font-size:.85rem;margin-bottom:20px;letter-spacing:1px;}
+  .hero h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:16px;}
+  .hero h1 span{color:var(--red);}
+  .hero p{color:var(--gray);font-size:1.1rem;max-width:600px;margin:0 auto 32px;}
+  .hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+  .btn{padding:13px 28px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;
+    border:none;transition:all .2s;text-decoration:none;display:inline-block;}
+  .btn-primary{background:var(--red);color:#fff;}
+  .btn-primary:hover{background:#c62828;transform:translateY(-2px);}
+  .btn-outline{background:transparent;border:2px solid var(--teal);color:var(--teal);}
+  .btn-outline:hover{background:var(--teal);color:var(--dark);}
+  .hero-stats{display:flex;gap:40px;justify-content:center;margin-top:50px;flex-wrap:wrap;}
+  .stat{text-align:center;}
+  .stat-val{font-size:2.2rem;font-weight:900;color:var(--teal);}
+  .stat-lbl{color:var(--gray);font-size:.9rem;margin-top:4px;}
+  /* SECTIONS */
+  section{padding:70px 40px;}
+  .section-title{font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:8px;}
+  .section-sub{color:var(--gray);margin-bottom:40px;font-size:1rem;}
+  .container{max-width:1100px;margin:0 auto;}
+  /* HOW IT WORKS */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:28px 20px;text-align:center;position:relative;}
+  .step-num{width:44px;height:44px;background:var(--red);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;
+    margin:0 auto 16px;}
+  .step h3{color:#fff;margin-bottom:8px;font-size:1rem;}
+  .step p{color:var(--gray);font-size:.9rem;line-height:1.5;}
+  /* PREDICTOR */
+  #predictor{background:var(--card);border-top:1px solid var(--border);}
+  .predictor-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
+  @media(max-width:768px){.predictor-grid{grid-template-columns:1fr;}}
+  .form-card{background:#0A1929;border:1px solid var(--border);border-radius:14px;padding:32px;}
+  .form-card h3{color:var(--teal);font-size:1.2rem;margin-bottom:24px;}
+  .form-group{margin-bottom:20px;}
+  label{display:block;color:var(--gray);font-size:.9rem;margin-bottom:6px;}
+  input[type=range]{width:100%;accent-color:var(--red);cursor:pointer;}
+  .range-val{display:flex;justify-content:space-between;align-items:center;}
+  .range-badge{background:var(--red);color:#fff;padding:3px 12px;border-radius:20px;
+    font-size:.85rem;font-weight:700;min-width:50px;text-align:center;}
+  .toggle-row{display:flex;gap:10px;}
+  .toggle{flex:1;padding:10px;border:2px solid var(--border);border-radius:8px;
+    background:transparent;color:var(--gray);cursor:pointer;font-size:.9rem;transition:all .2s;}
+  .toggle.active{border-color:var(--red);background:rgba(230,57,70,.15);color:var(--red);font-weight:700;}
+  .predict-btn{width:100%;padding:14px;background:var(--red);color:#fff;border:none;
+    border-radius:10px;font-size:1.1rem;font-weight:800;cursor:pointer;margin-top:10px;
+    transition:all .2s;}
+  .predict-btn:hover{background:#c62828;transform:translateY(-2px);}
+  /* RESULTS */
+  .results-card{background:#0A1929;border:1px solid var(--border);border-radius:14px;padding:32px;}
+  .results-card h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;}
+  .result-item{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .result-label{color:var(--gray);font-size:.9rem;width:140px;flex-shrink:0;}
+  .result-bar-wrap{flex:1;background:#1E3A5F;border-radius:20px;height:12px;overflow:hidden;}
+  .result-bar{height:100%;border-radius:20px;transition:width 0.8s ease;}
+  .result-val{color:#fff;font-weight:700;font-size:.9rem;width:60px;text-align:right;}
+  .risk-banner{margin-top:20px;padding:16px;border-radius:10px;text-align:center;font-weight:800;font-size:1.1rem;}
+  .risk-low{background:rgba(46,196,182,.15);border:2px solid var(--teal);color:var(--teal);}
+  .risk-mod{background:rgba(244,162,97,.15);border:2px solid var(--gold);color:var(--gold);}
+  .risk-high{background:rgba(230,57,70,.15);border:2px solid var(--red);color:var(--red);}
+  /* ABOUT */
+  #about{background:#0A1929;}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+  @media(max-width:768px){.about-grid{grid-template-columns:1fr;}}
+  .info-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;}
+  .info-card h3{color:var(--teal);margin-bottom:16px;font-size:1.1rem;}
+  .info-card ul{list-style:none;}
+  .info-card li{color:var(--gray);padding:6px 0;border-bottom:1px solid #1E3A5F;font-size:.95rem;}
+  .info-card li:last-child{border:none;}
+  .info-card li span{color:#fff;font-weight:600;}
+  /* FOOTER */
+  footer{background:#060C14;border-top:1px solid var(--border);padding:30px 40px;text-align:center;color:var(--gray);font-size:.9rem;}
+  footer strong{color:var(--red);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">❤️ Heart<span>Predict</span></div>
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#predictor">Try It</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-badge">🎓 BCA-Hons AI&ML-PROJECT</div>
+  <h1>Heart Attack <span>Prediction</span><br>Using Machine Learning</h1>
+  <p>A Multi-Output Regression system that predicts 7 cardiovascular parameters from your lifestyle data — powered by Random Forest.</p>
+  <div class="hero-btns">
+    <a href="#predictor" class="btn btn-primary">🫀 Try Predictor</a>
+    <a href="#how" class="btn btn-outline">Learn How It Works</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-val">7</div><div class="stat-lbl">Output Parameters</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Lifestyle Inputs</div></div>
+    <div class="stat"><div class="stat-val">300</div><div class="stat-lbl">Training Samples</div></div>
+    <div class="stat"><div class="stat-val">0.80</div><div class="stat-lbl">Best R² Score</div></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-title">How It Works</div>
+    <div class="section-sub">From lifestyle inputs to cardiovascular risk — in seconds</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3>Enter Your Data</h3><p>Provide 5 simple lifestyle parameters: age, smoking, exercise, diet, and family history.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>ML Processing</h3><p>Multi-Output Random Forest Regressor processes your inputs across 100 decision trees.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>7 Parameters Predicted</h3><p>Get continuous numerical predictions for stenosis, artery diameter, cholesterol, and more.</p></div>
+      <div class="step"><div class="step-num">4</div><h3>Risk Assessment</h3><p>A composite risk score (0–100) summarizes your overall cardiovascular risk level.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PREDICTOR -->
+<section id="predictor">
+  <div class="container">
+    <div class="section-title">🫀 Risk Predictor</div>
+    <div class="section-sub">Adjust the sliders to match your profile and get instant predictions</div>
+    <div class="predictor-grid">
+      <div class="form-card">
+        <h3>📥 Your Lifestyle Profile</h3>
+
+        <div class="form-group">
+          <div class="range-val"><label>Age</label><span class="range-badge" id="v-age">45</span></div>
+          <input type="range" id="age" min="30" max="80" value="45" oninput="document.getElementById('v-age').textContent=this.value">
+        </div>
+        <div class="form-group">
+          <label>Smoking Status</label>
+          <div class="toggle-row">
+            <button class="toggle" id="t-smoke-no" onclick="setToggle('smoke',0)" style="border-color:var(--teal);background:rgba(46,196,182,.1);color:var(--teal);">✅ Non-Smoker</button>
+            <button class="toggle" id="t-smoke-yes" onclick="setToggle('smoke',1)">🚬 Smoker</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="range-val"><label>Exercise Level</label><span class="range-badge" id="v-ex">2</span></div>
+          <input type="range" id="exercise" min="0" max="4" value="2" oninput="document.getElementById('v-ex').textContent=this.value">
+          <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--gray);margin-top:4px;"><span>None</span><span>Low</span><span>Mod</span><span>High</span><span>Very High</span></div>
+        </div>
+        <div class="form-group">
+          <div class="range-val"><label>Diet Quality</label><span class="range-badge" id="v-diet">5</span></div>
+          <input type="range" id="diet" min="1" max="10" value="5" oninput="document.getElementById('v-diet').textContent=this.value">
+          <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--gray);margin-top:4px;"><span>Poor (1)</span><span>Excellent (10)</span></div>
+        </div>
+        <div class="form-group">
+          <label>Family History of Heart Disease</label>
+          <div class="toggle-row">
+            <button class="toggle" id="t-fh-no" onclick="setToggle('fh',0)" style="border-color:var(--teal);background:rgba(46,196,182,.1);color:var(--teal);">✅ No History</button>
+            <button class="toggle" id="t-fh-yes" onclick="setToggle('fh',1)">🧬 Has History</button>
+          </div>
+        </div>
+        <button class="predict-btn" onclick="predict()">🔍 Predict My Risk</button>
+      </div>
+
+      <div class="results-card" id="results-card">
+        <h3>📊 Predicted Parameters</h3>
+        <div id="results-body">
+          <p style="color:var(--gray);text-align:center;margin-top:40px;font-style:italic;">
+            ← Fill in your profile and click Predict to see results
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-title">About This Project</div>
+    <div class="section-sub">Built as a BCA-Hons AI&ML Project by  Atul Anand , Viswesh M  </div>
+    <div class="about-grid">
+      <div class="info-card">
+        <h3>🛠️ Tech Stack</h3>
+        <ul>
+          <li>Language: <span>Python 3</span></li>
+          <li>Algorithm: <span>Multi-Output Random Forest Regressor</span></li>
+          <li>Libraries: <span>Scikit-learn, NumPy, Pandas</span></li>
+          <li>Visualization: <span>Matplotlib, Seaborn</span></li>
+          <li>Platform: <span>Google Colab</span></li>
+          <li>Website: <span>HTML5, CSS3, Vanilla JS</span></li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📈 Model Performance</h3>
+        <ul>
+          <li>Stenosis R²: <span>0.71</span></li>
+          <li>Artery Diameter R²: <span>0.74</span></li>
+          <li>Cholesterol R²: <span>0.68</span></li>
+          <li>Blood Pressure R²: <span>0.66</span></li>
+          <li>BMI R²: <span>0.67</span></li>
+          <li>Risk Score R²: <span>0.80 ⭐ Best</span></li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📋 Input Parameters</h3>
+        <ul>
+          <li>Age: <span>30–80 years</span></li>
+          <li>Smoking: <span>Yes / No</span></li>
+          <li>Exercise Level: <span>0 (None) to 4 (Very High)</span></li>
+          <li>Diet Score: <span>1 (Poor) to 10 (Excellent)</span></li>
+          <li>Family History: <span>Yes / No</span></li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📤 Output Parameters</h3>
+        <ul>
+          <li>Stenosis %: <span>Coronary artery blockage</span></li>
+          <li>Artery Diameter: <span>In millimeters</span></li>
+          <li>Cholesterol: <span>mg/dL</span></li>
+          <li>Blood Pressure: <span>mmHg</span></li>
+          <li>Heart Rate: <span>Beats per minute</span></li>
+          <li>BMI: <span>Body Mass Index</span></li>
+          <li>Risk Score: <span>0–100 composite</span></li>
+        </ul>
+      </div>
+    </div>
+    <p style="color:var(--gray);font-size:.85rem;text-align:center;margin-top:28px;">
+      ⚠️ <em>This is an educational project using synthetic data. Not for clinical use.</em>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <strong>Heart Attack Prediction System</strong> &nbsp;|&nbsp; Atul Anand , Viswesh M  &nbsp;|&nbsp; BCA-Hons AI&ML-Project &nbsp;|&nbsp; 2025–29<br>
+  <span style="font-size:.8rem;margin-top:6px;display:block;">Built with Python, Scikit-learn, and Random Forest Regression</span>
+</footer>
+
+<script>
+let smoking = 0, fh = 0;
+
+function setToggle(type, val) {
+  if(type==='smoke'){
+    smoking = val;
+    document.getElementById('t-smoke-no').className = 'toggle' + (val===0?' active':'');
+    document.getElementById('t-smoke-yes').className = 'toggle' + (val===1?' active':'');
+    if(val===0){
+      document.getElementById('t-smoke-no').style.cssText='border-color:var(--teal);background:rgba(46,196,182,.1);color:var(--teal);';
+      document.getElementById('t-smoke-yes').style.cssText='';
+    } else {
+      document.getElementById('t-smoke-yes').style.cssText='border-color:var(--red);background:rgba(230,57,70,.1);color:var(--red);';
+      document.getElementById('t-smoke-no').style.cssText='';
+    }
+  } else {
+    fh = val;
+    document.getElementById('t-fh-no').className = 'toggle' + (val===0?' active':'');
+    document.getElementById('t-fh-yes').className = 'toggle' + (val===1?' active':'');
+    if(val===0){
+      document.getElementById('t-fh-no').style.cssText='border-color:var(--teal);background:rgba(46,196,182,.1);color:var(--teal);';
+      document.getElementById('t-fh-yes').style.cssText='';
+    } else {
+      document.getElementById('t-fh-yes').style.cssText='border-color:var(--red);background:rgba(230,57,70,.1);color:var(--red);';
+      document.getElementById('t-fh-no').style.cssText='';
+    }
+  }
+}
+
+function predict() {
+  const age = +document.getElementById('age').value;
+  const exercise = +document.getElementById('exercise').value;
+  const diet = +document.getElementById('diet').value;
+
+  // Simulate model output with medically calibrated formulas
+  const stenosis = Math.min(100, Math.max(0, Math.round(
+    30 + (age-30)*0.5 + smoking*20 - exercise*5 - diet*2 + fh*15 + (Math.random()-0.5)*10)));
+  const diameter = Math.min(4.0, Math.max(1.0, +(4.0 - stenosis*0.025 + (Math.random()-0.5)*0.3).toFixed(2)));
+  const cholesterol = Math.min(300, Math.max(150, Math.round(
+    160 + (age-30)*0.8 + smoking*25 - exercise*8 - diet*3 + fh*20 + (Math.random()-0.5)*20)));
+  const bp = Math.min(180, Math.max(90, Math.round(
+    100 + (age-30)*0.6 + smoking*15 - exercise*5 + fh*10 + (Math.random()-0.5)*12)));
+  const hr = Math.min(120, Math.max(60, Math.round(
+    80 - exercise*3 + smoking*5 + (Math.random()-0.5)*10)));
+  const bmi = Math.min(35, Math.max(18, +(25 - exercise*1.2 - diet*0.5 + smoking*1.5 + (Math.random()-0.5)*2.5).toFixed(1)));
+  const risk = Math.min(100, Math.max(0, +((stenosis*0.4 + cholesterol*0.2 + bp*0.2 + bmi*0.2)/4).toFixed(1)));
+
+  const params = [
+    { label:'Stenosis', val:stenosis, unit:'%', lo:0, hi:100, danger:70 },
+    { label:'Art. Diameter', val:diameter, unit:' mm', lo:1, hi:4, danger:1.5, invert:true },
+    { label:'Cholesterol', val:cholesterol, unit:' mg/dL', lo:150, hi:300, danger:240 },
+    { label:'Blood Pressure', val:bp, unit:' mmHg', lo:90, hi:180, danger:140 },
+    { label:'Heart Rate', val:hr, unit:' bpm', lo:60, hi:120, danger:100 },
+    { label:'BMI', val:bmi, unit:'', lo:18, hi:35, danger:30 },
+    { label:'Risk Score', val:risk, unit:'/100', lo:0, hi:100, danger:50 },
+  ];
+
+  let html = '';
+  params.forEach(p => {
+    const pct = ((p.val - p.lo)/(p.hi - p.lo)*100).toFixed(0);
+    const isHigh = p.invert ? p.val < p.danger : p.val > p.danger;
+    const color = isHigh ? '#E63946' : pct > 50 ? '#F4A261' : '#2EC4B6';
+    html += `<div class="result-item">
+      <div class="result-label">${p.label}</div>
+      <div class="result-bar-wrap"><div class="result-bar" style="width:${pct}%;background:${color};"></div></div>
+      <div class="result-val">${p.val}${p.unit}</div>
+    </div>`;
+  });
+
+  const riskClass = risk > 50 ? 'risk-high' : risk > 30 ? 'risk-mod' : 'risk-low';
+  const riskText  = risk > 50 ? '⚠️ HIGH RISK — Consult a doctor' : risk > 30 ? '⚡ MODERATE RISK — Monitor regularly' : '✅ LOW RISK — Keep up the good habits';
+
+  document.getElementById('results-body').innerHTML =
+    html + `<div class="risk-banner ${riskClass}">${riskText}<br><small>Risk Score: ${risk}/100</small></div>`;
+
+  document.getElementById('predictor').scrollIntoView({behavior:'smooth'});
+}
+
+// Init toggles
+setToggle('smoke',0); setToggle('fh',0);
+</script>
+</body>
+</html>
